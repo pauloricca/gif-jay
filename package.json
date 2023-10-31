@@ -26,15 +26,15 @@
   },
   "homepage": "https://github.com/pauloricca/gif-jay#readme",
   "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
+    "cookie-parser": "1.4.4",
+    "debug": "2.6.9",
+    "express": "4.16.1",
     "giphy-js-sdk-core": "^1.0.6",
-    "morgan": "~1.9.1"
+    "morgan": "1.9.1"
   },
   "devDependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.1.0",
-    "@ffprobe-installer/ffprobe": "^2.1.2",
-    "fluent-ffmpeg": "^2.1.2"
+    "@ffmpeg-installer/ffmpeg": "1.1.0",
+    "@ffprobe-installer/ffprobe": "2.1.2",
+    "fluent-ffmpeg": "2.1.2"
   }
 }
