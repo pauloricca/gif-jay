@@ -1,0 +1,40 @@
+{
+  "name": "gif-jay",
+  "version": "1.0.0",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
+    "run": "DEBUG=gif-jay:* npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pauloricca/gif-jay.git"
+  },
+  "keywords": [
+    "sound",
+    "reactive",
+    "gif",
+    "vjay",
+    "giphy"
+  ],
+  "author": "Paulo Ricca",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pauloricca/gif-jay/issues"
+  },
+  "homepage": "https://github.com/pauloricca/gif-jay#readme",
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "giphy-js-sdk-core": "^1.0.6",
+    "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
+    "fluent-ffmpeg": "^2.1.2"
+  }
+}
