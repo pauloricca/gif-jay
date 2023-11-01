@@ -1,82 +1,68 @@
-import processing.net.*;
+// Needs Processing video v4 library installed
+
 import java.io.File;
-import gifAnimation.*;
+import processing.video.*;
 
-int port = 10002;
-Server myServer;
+float changeEvery = 2; // In seconds
 
-ArrayList<PImage[]> gifs = new ArrayList<PImage[]>();
+ArrayList<Movie> movies = new ArrayList<Movie>();
+Movie currentMovie;
 
-int currentGif = 0;
-int currentFrame = 0;
+int currentMovieIndex = 0;
+int lastChange = millis();
 
 void setup()
 {
+  //fullScreen();
+  //noCursor();
   size(400, 400);
   background(0);
-  myServer = new Server(this, port);
   frameRate(25);
   
-  loadDir("a");
+  initServer();
 }
 
 void draw()
 {
   background(0);
   checkServer();
-  if (gifs.size() == 0) return;
+  if (movies.size() == 0) return;
+  
+  int currentTime = millis();
+  if (lastChange + (changeEvery * 1000) < currentTime) {
+    currentMovie.stop();
+    currentMovieIndex = (currentMovieIndex + 1) % movies.size();
+    currentMovie = movies.get(currentMovieIndex);
+    currentMovie.jump(0);
+    currentMovie.loop();
+    println("playing " + currentMovieIndex);
+    lastChange = currentTime;
+  }
+  
+  float movieSizeRatio = float(currentMovie.width) / float(currentMovie.height);
+  float screenSizeRatio = float(width) / float(height);
+  float renderHeight = 0;
+  float renderWidth = 0;
+  
+  if (movieSizeRatio > screenSizeRatio) {
+     renderHeight = float(height);
+     renderWidth = renderHeight * movieSizeRatio;
+  } else {
+    renderWidth = float(width);
+    renderHeight = renderWidth * float(currentMovie.height) / float(currentMovie.width);
+  }
  
-  if (currentGif < gifs.size() && currentFrame < gifs.get(currentGif).length)
-  {
-    image(gifs.get(currentGif)[currentFrame], 0, 0);
-    currentFrame++;
-  }
-  if (currentFrame >= gifs.get(currentGif).length)
-  {
-    currentFrame = 0;
-    currentGif++;
-  }
-  if (currentGif >= gifs.size())
-  {
-    currentGif = 0;
-  }
+  image(currentMovie,
+        - (renderWidth - float(width)) / 2,
+        - (renderHeight - float(height)) / 2, 
+        renderWidth,
+        renderHeight
+   );
 }
 
-void checkServer()
-{
-  // Get the next available client
-  Client thisClient = myServer.available();
-  // If the client is not null, and says something, display what it said
-  if (thisClient != null) {
-     println("Request received");
-     String requestBody = thisClient.readString();
-     if (requestBody != null)
-     {
-       String[] requestBodyLines = requestBody.split(System.lineSeparator());
-       String lastLine = requestBodyLines[requestBodyLines.length - 1];
-       loadDir(lastLine);
-     }
-  }
+void movieEvent(Movie m) {
+  m.read();
 }
 
-void loadDir(String dirName)
-{
-  try {
-    println("Loading directory " + dirName);
-    java.io.File folder = new java.io.File(dataPath(dirName));
-    String[] fileNames = folder.list();
-    gifs.clear();
-    currentGif = 0;
-    currentFrame = 0;
-    for(int i = 0; i < fileNames.length; i++)
-    {
-      println("loading gif " + dataPath(dirName + '/' + fileNames[i]));
-      PImage[] gif = Gif.getPImages(this, dataPath(dirName + '/' + fileNames[i]));
-      println(gif.length + " frames");
-      gifs.add(gif);
-    }
-  } catch (Exception e) {
-    println("Error loading directory " + dirName);
-  }
-}
+
   
