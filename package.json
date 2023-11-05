@@ -4,6 +4,7 @@
   "private": true,
   "main": "app.js",
   "scripts": {
+    "start": "node scripts/start",
     "start-server": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "run": "DEBUG=gif-jay:* npm start"

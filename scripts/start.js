@@ -1,9 +1,9 @@
 const { exec } = require("child_process");
 
-var processingProcess, serverProcess;
+var projectionProcess, serverProcess;
 
 const startProjection = () => {
-  processingProcess = exec(
+  projectionProcess = exec(
     `processing-java --sketch=${__dirname}/../projection --run`
   );
 };
@@ -16,21 +16,24 @@ const isProcessRunning = (pid, callback) => {
   exec(`ps cax | grep ${pid}`, (_, stdout, __) => callback(!!stdout));
 };
 
-const restart = () => {
-    try {
-        processingProcess.kill();
-    } catch (e) {}
-    try {
-        serverProcess.kill();
-    } catch (e) {}
-    startProjection();
-    startServer();
-}
-
 startProjection();
 startServer();
 
 setInterval(() => {
-    isProcessRunning(processingProcess.pid, (isRunning) => !isRunning && restart());
-    isProcessRunning(serverProcess.pid, (isRunning) => !isRunning && restart());
+    isProcessRunning(projectionProcess.pid, (isRunning) => {
+        if (!isRunning) {
+            try {
+                projectionProcess.kill();
+                startProjection();
+            } catch (e) {}
+        }
+    });
+    isProcessRunning(serverProcess.pid, (isRunning) => {
+        if (!isRunning) {
+            try {
+                serverProcess.kill();
+                startServer();
+            } catch (e) {}
+        }
+    });
 }, 1000);
