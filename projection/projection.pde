@@ -14,10 +14,10 @@ boolean mouseIsDown = false;
 float time = 0;
 
 boolean useMidiController = false;
-boolean isFullscreen = false;
+boolean isFullscreen = true;
 boolean doPostFX = true;
-boolean showPreview = true;
-boolean liveShaders = true;
+boolean showPreview = false;
+boolean liveShaders = false;
 
 ArrayList<Controllable> controllables = null;
 
@@ -57,7 +57,6 @@ Controllable baseStrength = new Controllable("base strength", 1, 0, 1);
 Controllable postFXStrength = new Controllable("post fx", 0.5, 0, 1);
 
 MovieProgramme movieProgramme;
-
 
 ArrayList<Programme> programmes = new ArrayList<Programme>();
 Programme currentProgramme;
@@ -130,8 +129,6 @@ void draw() {
   try {
     time += timeIncrement.val() * (1/frameRate);
     
-    checkServer();
-    
     if(liveShaders && shaderLoadTimer < 0) { loadShaders(); shaderLoadTimer = shaderLoadEvery; }
     shaderLoadTimer--;
     
@@ -139,7 +136,6 @@ void draw() {
     drawBase();
     
     pg.beginDraw();
-    //pg.background(0);
     pg.shader(shader);
     pg.rect(0, 0, pg.width, pg.height);
     pg.endDraw();  
@@ -151,9 +147,7 @@ void draw() {
     
     if (showPreview) {
       if (previewScreenshotEvery<0) {
-        //preview.copy(pg.get(), 0, 0, width, height, 0, 0, width, height);
         pg.loadPixels();
-        //preview.loadPixels();
         for (int i = 0; i < pg.width*pg.height; i++) {
           preview.pixels[i] = pg.pixels[i];
         }
@@ -164,7 +158,6 @@ void draw() {
       previewScreenshotEvery--;
     }
     
-    //println(frameRate);
     frame_rate = frameRate;
   } catch (Exception e) {println(e);}
 }
@@ -227,7 +220,6 @@ void setup_old()
 void draw_old()
 {
   background(0);
-  checkServer();
 }
 
 void movieEvent(Movie m) {

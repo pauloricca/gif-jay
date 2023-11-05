@@ -1,39 +1,24 @@
 const https = require("https");
-const http = require("http");
 const fs = require("fs");
 const ffmpegInstaller = require("@ffmpeg-installer/ffmpeg");
 const ffprobe = require("@ffprobe-installer/ffprobe");
+const { GALLERIES_ROOT_PATH } = require("./constants");
+const { playGallery } = require("./processing");
 
-//const path = require("path");
-const processingPort = 10002;
 
 const gifSave = (request, response) => {
   var dir = '';
   var tries = '';
   let name = ''
-  console.log('start');
+  console.log('saving...');
   do {
     name = request.params.name + tries;
     console.log('trying directory ' + name);
-    dir = __dirname + "/../projection/data/" + name + '/';
+    dir = GALLERIES_ROOT_PATH + name + '/';
     tries = tries === '' ? 2 : tries + 1;
   } while (fs.existsSync(dir));
 
-  console.log(dir);
-
   fs.mkdirSync(dir);
-
-  
-  // if (!fs.existsSync(dir)) {
-  //   fs.mkdirSync(dir);
-  // } else {
-  //   fs.readdir(dir, (err, files) => {
-  //     if (!err) for (const file of files) {
-  //       console.log('removing ' + path.join(dir, file));
-  //       fs.unlink(path.join(dir, file), () => {});
-  //     }
-  //   });
-  // }
 
   let nCompletedFiles = 0;
 
@@ -52,7 +37,7 @@ const gifSave = (request, response) => {
       .noAudio()
       .output(vidPath)
       .on("end", () => {
-        console.log("Video convertion completed.");
+        console.log("Video " + index + " convertion complete");
         finishedProcessing();
       })
       .on("error", (e) => console.log(e))
@@ -63,46 +48,32 @@ const gifSave = (request, response) => {
     nCompletedFiles++;
     if (nCompletedFiles === request.body.images.length) {
       console.log("Done. Sending to Processing.");
-      //http.post(processingUrl);
-      const post_options = {
-        hostname: "localhost",
-        port: processingPort,
-        path: "/upload",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Content-Length": Buffer.byteLength(name),
-        },
-      };
-      try {
-        // Set up the request and post the dir name
-        var post_req = http.request(post_options);
-        post_req.shouldKeepAlive = false;
-        request.on("error", function (err) {
-          console.log("error completing request to Processing");
-        });
-        post_req.write(name);
-        post_req.end();
-      } catch (e) {
-        console.log("error completing request to Processing");
-      }
+      playGallery(name);
     }
   }
 
   request.body.images.forEach((url, index) => {
-    try {
-      const gifPath = dir + index + ".gif";
-      const file = fs.createWriteStream(gifPath);
-      https.get(url, (resp) => {
-        resp.pipe(file);
-        file.on("finish", () => {
-          file.close();
-          console.log(index + " download completed");
-          postProcessDownload(index);
+    const gifPath = dir + index + ".gif";
+
+    // Gif from another gallery?
+    if (url.indexOf('gif/') === 0) {
+      fs.copyFileSync(GALLERIES_ROOT_PATH + url.substring(4), gifPath);
+      console.log("Gif " + index + " move complete");
+      postProcessDownload(index);
+    } else {
+      try {
+        const file = fs.createWriteStream(gifPath);
+        https.get(url, (resp) => {
+          resp.pipe(file);
+          file.on("finish", () => {
+            file.close();
+            console.log("Gif " + index + " download complete");
+            postProcessDownload(index);
+          });
         });
-      });
-    } catch (e) {
-      console.log('error downloading gif');
+      } catch (e) {
+        console.log('error downloading gif');
+      }
     }
   });
 

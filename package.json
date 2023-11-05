@@ -4,7 +4,7 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "node ./bin/www",
+    "start-server": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "run": "DEBUG=gif-jay:* npm start"
   },
@@ -30,7 +30,8 @@
     "debug": "2.6.9",
     "express": "4.16.1",
     "giphy-js-sdk-core": "^1.0.6",
-    "morgan": "1.9.1"
+    "morgan": "1.9.1",
+    "node-osc": "^9.0.2"
   },
   "devDependencies": {
     "@ffmpeg-installer/ffmpeg": "1.1.0",

@@ -1,25 +1,25 @@
-import processing.net.*;
+import oscP5.*;
+import netP5.*;
+
+OscP5 oscP5;
 
 int port = 10002;
-Server myServer;
 
 void initServer() {
-  myServer = new Server(this, port);
+  oscP5 = new OscP5(this, port);
   movieProgramme.loadDir("synthwave");
 }
 
-void checkServer() {
-  // Get the next available client
-  Client thisClient = myServer.available();
-  // If the client is not null, and says something, display what it said
-  if (thisClient != null) {
-     println("Request received");
-     String requestBody = thisClient.readString();
-     if (requestBody != null)
-     {
-       String[] requestBodyLines = requestBody.split(System.lineSeparator());
-       String lastLine = requestBodyLines[requestBodyLines.length - 1];
-       movieProgramme.loadDir(lastLine);
-     }
-  }
+/* incoming osc message are forwarded to the oscEvent method. */
+void oscEvent(OscMessage theOscMessage) {
+  /* print the address pattern and the typetag of the received OscMessage */
+  println("### received an osc message.");
+  println(" addrpattern: "+theOscMessage.addrPattern());
+  println(" typetag: "+theOscMessage.typetag());
+  
+  if(theOscMessage.checkAddrPattern("/play") == true && theOscMessage.checkTypetag("s")) {
+    if(theOscMessage.checkTypetag("s")) {
+      movieProgramme.loadDir(theOscMessage.get(0).stringValue());
+    }  
+  } 
 }

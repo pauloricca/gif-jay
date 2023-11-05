@@ -26,7 +26,6 @@ public class MovieProgramme implements Programme {
       currentMovie = movies.get(currentMovieIndex);
       currentMovie.jump(0);
       currentMovie.loop();
-      println("playing " + currentMovieIndex);
       lastChange = currentTime;
     }
     
