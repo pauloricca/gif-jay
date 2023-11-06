@@ -21,8 +21,8 @@ void keyboardPressed(int key) {
       case 101:  break; // e
       case 114:  break; // r
       
-      case 97: currentPostFXShader = "bloom"; break; // a
-      case 115: currentPostFXShader = "glitch"; break; // s
+      case 97: currentPostFXShader = "bloom"; loadShaders(); break; // a
+      case 115: currentPostFXShader = "glitch"; loadShaders(); break; // s
       case 100:  break; // d
       case 102:  break; // f
     }

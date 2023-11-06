@@ -48,7 +48,7 @@ Controllable p2 = new Controllable("p2 scale x", 0.7, 0, 1, 18);
 Controllable p3 = new Controllable("p3 flow x", 0.05, 0, 1, 19);
 Controllable p4 = new Controllable("p4 distortion", 0, 0, 1, 20);
 
-Controllable p5 = new Controllable("p5 octaves", 0.5, 0, 1, 1);
+Controllable p5 = new Controllable("p5 octaves", 0.2, 0, 1, 1);
 Controllable p6 = new Controllable("p6 scale y", 0.5, 0, 1, 2);
 Controllable p7 = new Controllable("p7 flow y", 0.1, 0, 1, 3);
 Controllable p8 = new Controllable("p8 octave falloff", 0.95, 0, 1, 4);
@@ -221,10 +221,5 @@ void draw_old()
 {
   background(0);
 }
-
-void movieEvent(Movie m) {
-  m.read();
-}
-
 
   
