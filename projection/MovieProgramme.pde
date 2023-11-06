@@ -14,7 +14,7 @@ public class MovieProgramme implements Programme {
   private Movie currentMovie;
   private Movie nextMovie;
   
-  private int currentMovieIndex = 0;
+  private int nextMovieIndex = 0;
   private int lastChange = millis();
   
   public MovieProgramme(PApplet pApplet) {
@@ -31,8 +31,8 @@ public class MovieProgramme implements Programme {
       currentMovie.jump(0);
       currentMovie.play();
       currentMovie.loop();
-      currentMovieIndex = (currentMovieIndex + 1) % moviePaths.size();
-      nextMovie = new Movie(this.pApplet, moviePaths.get(currentMovieIndex));
+      nextMovieIndex = (nextMovieIndex + 1) % moviePaths.size();
+      nextMovie = new Movie(this.pApplet, moviePaths.get(nextMovieIndex));
       nextMovie.play();
       lastChange = currentTime;
     }
@@ -69,25 +69,28 @@ public class MovieProgramme implements Programme {
       println("Loading directory " + dirName);
       java.io.File folder = new java.io.File(dataPath(dirName));
       String[] fileNames = folder.list();
-      moviePaths.clear();
-      currentMovieIndex = 0;
+      ArrayList<String> newMoviePaths = new ArrayList<String>();
       
       for(int i = 0; i < fileNames.length; i++)
       {
         if (fileNames[i].endsWith(".mp4")) {
           println("loading video " + dirName + '/' + fileNames[i]);
-          moviePaths.add(dirName + '/' + fileNames[i]);
+          newMoviePaths.add(dirName + '/' + fileNames[i]);
         }
       }
       
-      if (moviePaths.size() > 0) {
-        currentMovie = new Movie(this.pApplet, moviePaths.get(0));
+      if (newMoviePaths.size() > 0) {
+        currentMovie = new Movie(this.pApplet, newMoviePaths.get(0));
         currentMovie.play();
         currentMovie.loop();
-        if (moviePaths.size() > 1) {
-          nextMovie = new Movie(this.pApplet, moviePaths.get(1));
-          nextMovie.play();
+        if (newMoviePaths.size() > 1) {
+          nextMovieIndex = 1;
+        } else {
+          nextMovieIndex = 0;
         }
+        nextMovie = new Movie(this.pApplet, newMoviePaths.get(nextMovieIndex));
+        nextMovie.play();
+        moviePaths = newMoviePaths;
       }
     } catch (Exception e) {
       println("Error loading directory " + dirName);
