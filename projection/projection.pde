@@ -1,4 +1,5 @@
-PShader shader;
+PShader colourShader;
+PShader mainShader;
 PShader postFXShader;
 PGraphics pg;
 PGraphics base;
@@ -17,7 +18,7 @@ boolean useMidiController = false;
 boolean isFullscreen = true;
 boolean doPostFX = true;
 boolean showPreview = false;
-boolean liveShaders = false;
+boolean liveShaders = true;
 
 ArrayList<Controllable> controllables = null;
 
@@ -65,8 +66,9 @@ float previousProgrammeMultiplier = 0;
 float currentProgrammeMultiplier = 1;
 float programmeFadeSpeed = 0.03;
 
-String currentShader = "noise"; 
-String currentPostFXShader = "bloom"; 
+String currentMainShaderName = "noise"; 
+String currentColourShaderName = null;
+String currentPostFXShaderName = "bloom"; 
 
 void setup() {
   //fullScreen(P3D, 2); 
@@ -104,23 +106,26 @@ void setup() {
 }
 
 void loadShaders() {
-  shader = loadShader(currentShader + ".glsl");
-  shader.set("resolution", float(pg.width), float(pg.height));
-  postFXShader = loadShader(currentPostFXShader + ".glsl");
-  postFXShader.set("resolution", float(pg.width), float(pg.height));
+  if (currentColourShaderName == null) colourShader = null;
+  else colourShader = loadShader(currentColourShaderName + ".glsl");
+  mainShader = loadShader(currentMainShaderName + ".glsl");
+  mainShader.set("resolution", float(pg.width), float(pg.height));
+  postFXShader = loadShader(currentPostFXShaderName + ".glsl");
+  postFXShader.set("resolution", float(pg.width), float(pg.height)); // paulo
 }
 
 void updateShaders() {
-  shader.set("time", time);
-  shader.set("p1", p1.val());
-  shader.set("p2", p2.val());
-  shader.set("p3", p3.val());
-  shader.set("p4", p4.val());
-  shader.set("p5", p5.val());
-  shader.set("p6", p6.val());
-  shader.set("p7", p7.val());
-  shader.set("p8", p8.val()); 
-  shader.set("srcTex", base);
+  if (colourShader != null) colourShader.set("time", time);
+  mainShader.set("time", time);
+  mainShader.set("p1", p1.val());
+  mainShader.set("p2", p2.val());
+  mainShader.set("p3", p3.val());
+  mainShader.set("p4", p4.val());
+  mainShader.set("p5", p5.val());
+  mainShader.set("p6", p6.val());
+  mainShader.set("p7", p7.val());
+  mainShader.set("p8", p8.val()); 
+  mainShader.set("srcTex", base);
   postFXShader.set("time", time);
   postFXShader.set("strength", postFXStrength.val());
 }
@@ -132,18 +137,20 @@ void draw() {
     if(liveShaders && shaderLoadTimer < 0) { loadShaders(); shaderLoadTimer = shaderLoadEvery; }
     shaderLoadTimer--;
     
-    updateShaders();
     drawBase();
     
+    if (colourShader != null) base.filter(colourShader);
+    
+    updateShaders();
+    
     pg.beginDraw();
-    pg.shader(shader);
+    pg.shader(mainShader);
     pg.rect(0, 0, pg.width, pg.height);
     pg.endDraw();  
     
-    postFXShader.set("srcTex", pg);
-    if (doPostFX && postFXStrength.val() > 0) shader(postFXShader);
-    else resetShader();
     image(pg, 0, 0, width, height);
+ 
+    if (doPostFX && postFXStrength.val() > 0) filter(postFXShader);
     
     if (showPreview) {
       if (previewScreenshotEvery<0) {

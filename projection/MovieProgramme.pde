@@ -74,7 +74,6 @@ public class MovieProgramme implements Programme {
       for(int i = 0; i < fileNames.length; i++)
       {
         if (fileNames[i].endsWith(".mp4")) {
-          println("loading video " + dirName + '/' + fileNames[i]);
           newMoviePaths.add(dirName + '/' + fileNames[i]);
         }
       }

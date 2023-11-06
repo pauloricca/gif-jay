@@ -16,15 +16,20 @@ void keyboardPressed(int key) {
     setProgramme(programmes.get(programmeNumber));
   } else {
     switch (key) {
-      case 113: currentShader = "noise"; loadShaders(); break; // q
-      case 119: currentShader = "variations"; loadShaders(); break; // w
-      case 101:  break; // e
-      case 114:  break; // r
+      case 113: currentMainShaderName = "noise"; loadShaders(); break; // q
+      case 119: currentMainShaderName = "variations"; loadShaders(); break; // w
+      case 101: break; // e
+      case 114: break; // r
       
-      case 97: currentPostFXShader = "bloom"; loadShaders(); break; // a
-      case 115: currentPostFXShader = "glitch"; loadShaders(); break; // s
-      case 100:  break; // d
-      case 102:  break; // f
+      case 97: currentPostFXShaderName = "bloom"; loadShaders(); break; // a
+      case 115: currentPostFXShaderName = "glitch"; loadShaders(); break; // s
+      case 100: break; // d
+      case 102: break; // f
+      
+      case 122: currentColourShaderName = null; loadShaders(); break; // z
+      case 120: currentColourShaderName = "black-and-white"; loadShaders(); break; // x
+      case 99: currentColourShaderName = "acid"; loadShaders(); break; // c
+      case 118: currentColourShaderName = "edges"; loadShaders(); break; // v
     }
   }
 }

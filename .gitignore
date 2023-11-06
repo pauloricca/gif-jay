@@ -62,3 +62,4 @@ typings/
 
 .DS_Store
 projection/data/*
+!projection/data/*.glsl
