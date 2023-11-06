@@ -18,4 +18,4 @@ Before running Web Server make sure to have the Processing app (under projection
 
 ## Run Web Server
 
-$ npm run-script dev
+$ npm run dev
