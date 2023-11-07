@@ -39,9 +39,5 @@ void main(void)
   	vec4 sobel_edge_v = n[0] + (2.0*n[1]) + n[2] - (n[6] + (2.0*n[7]) + n[8]);
 	vec4 sobel = sqrt((sobel_edge_h * sobel_edge_h) + (sobel_edge_v * sobel_edge_v));
 
-	float maxEdge = sobel.r;
-	if (sobel.g > maxEdge) maxEdge = sobel.g;
-	if (sobel.b > maxEdge) maxEdge = sobel.b;
-
-	gl_FragColor = vec4( vec3(maxEdge), 1.0 );
+	gl_FragColor = vec4( sobel.rgb, 1.0 );
 }

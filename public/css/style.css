@@ -2,6 +2,10 @@ body, html {
     margin: 0;
 }
 
+input, select {
+    font-size: 1.1rem;
+}
+
 #controls {
     position: fixed;
     width: 100%;

@@ -7,6 +7,7 @@ $(() => {
   $("#query-input").on("keypress", (e) => { e.which == 13 && loadNewImages(); return true; }  );
   $("body").on("click", ".image", select)
   $("#galleries").on('change', openGallery);
+  $("#colour").on('change', changeColour);
   showSelection();
   loadGalleries();
 });
@@ -109,4 +110,12 @@ var openGallery = () => {
     );
     $("#play-btn").show();
   }
+}
+
+var changeColour = () => {
+  selectedColour = $("#colour").find(":selected").val();
+  if (selectedColour) {
+    $.getJSON("api/setting/colour/" + selectedColour);
+  }
+  $("#colour").val("");
 }

@@ -93,8 +93,14 @@ void main()
     noise = noise + (snoise(vec2(relTime*10.0, uv.y * 2.4)) - 0.5) * 0.35;
     
     // Apply the noise as x displacement for every line
-    float xpos = uv.x - noise * noise * 0.25 * strength * 2;
+    float xpos = uv.x - noise * noise * 0.1 * strength * 2;
 	  gl_FragColor = texture(texture, vec2(xpos, uv.y));
+
+    // Add some shadows
+    gl_FragColor += strength * .2 * texture(texture, vec2(xpos + 0.03, uv.x));
+    gl_FragColor += strength * texture(texture, vec2(xpos + 0.06, uv.y));
+    gl_FragColor += strength * .5 * texture(texture, vec2(xpos + 0.06, uv.y));
+    gl_FragColor += strength * .25 * texture(texture, vec2(xpos + 0.12, uv.y));
     
     // Mix in some random interference for lines
     gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(rand(vec2(uv.y * relTime))), noise * 0.3).rgb;
@@ -116,15 +122,15 @@ void main()
       gl_FragColor += whiteNoise * 0.7;
     }
 
-    if (noise > 0.1 && noise < 0.2) {
-      gl_FragColor.r /= noise * 2.0;
-    }
-
     if (noise > 0.2 && noise < 0.3) {
-      gl_FragColor.g /= noise * 1.7;
+      gl_FragColor.r += noise * 0.2;
     }
 
     if (noise > 0.3 && noise < 0.4) {
-      gl_FragColor.b /= noise * 1.7;
+      gl_FragColor.g += noise * 0.7;
+    }
+
+    if (noise > 0.4 && noise < 0.5) {
+      gl_FragColor.b += noise * 0.7;
     }
 }

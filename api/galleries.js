@@ -32,6 +32,7 @@ exports.getGallery = (request, response) => {
   })
 };
 
-exports.playGallery = (request) => {
+exports.playGallery = (request, response) => {
   playGallery(request.params.gallery);
+  response.send();
 };

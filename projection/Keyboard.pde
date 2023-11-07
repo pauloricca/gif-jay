@@ -29,7 +29,8 @@ void keyboardPressed(int key) {
       case 122: currentColourShaderName = null; loadShaders(); break; // z
       case 120: currentColourShaderName = "black-and-white"; loadShaders(); break; // x
       case 99: currentColourShaderName = "acid"; loadShaders(); break; // c
-      case 118: currentColourShaderName = "edges"; loadShaders(); break; // v
+      case 118: currentColourShaderName = "neon"; loadShaders(); break; // v
+      case 98: currentColourShaderName = "edges"; loadShaders(); break; // b
     }
   }
 }

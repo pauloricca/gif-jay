@@ -148,9 +148,10 @@ void draw() {
     pg.rect(0, 0, pg.width, pg.height);
     pg.endDraw();  
     
+    if (doPostFX && postFXStrength.val() > 0) pg.filter(postFXShader);
+    
     image(pg, 0, 0, width, height);
  
-    if (doPostFX && postFXStrength.val() > 0) filter(postFXShader);
     
     if (showPreview) {
       if (previewScreenshotEvery<0) {

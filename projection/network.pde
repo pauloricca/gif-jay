@@ -18,8 +18,16 @@ void oscEvent(OscMessage theOscMessage) {
   println(" typetag: "+theOscMessage.typetag());
   
   if(theOscMessage.checkAddrPattern("/play") == true && theOscMessage.checkTypetag("s")) {
-    if(theOscMessage.checkTypetag("s")) {
       movieProgramme.loadDir(theOscMessage.get(0).stringValue());
-    }  
+  } else if(theOscMessage.checkAddrPattern("/setting") == true) {
+      String setting = theOscMessage.get(0).stringValue();
+      if (setting.equals("colour")) {
+        String colourFilter = theOscMessage.get(1).stringValue();
+        if (colourFilter.equals("normal")) {
+          currentColourShaderName = null; loadShaders();
+        } else {
+          currentColourShaderName = colourFilter; loadShaders();
+        }
+      }
   } 
 }
