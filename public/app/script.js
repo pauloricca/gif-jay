@@ -1,7 +1,9 @@
 $(() => {
   $("#search-btn").on('click', loadNewImages);
   $("#select-btn").on('click', addToSelection);
+  $("#cancel-btn").on('click', cancelSearch);
   $("#remove-btn").on('click', removeFromSelection);
+  $("#clear-btn").on('click', clearSelection);
   $("#save-btn").on('click', save);
   $("#play-btn").on('click', play);
   $("#query-input").on("keypress", (e) => { e.which == 13 && loadNewImages(); return true; }  );
@@ -61,13 +63,13 @@ var clearGallery = () => {
 };
 
 var showGallery = () => {
-  $("#selection, #masks, #remove-btn, #save-btn, #play-btn").hide();
-  $("#gallery, #select-btn").show();
+  $("#selection, #masks, #remove-btn, #clear-btn, #save-btn, #play-btn").hide();
+  $("#gallery, #select-btn, #cancel-btn").show();
 };
 
 var showSelection = () => {
-  $("#selection, #masks, #remove-btn, #save-btn").show();
-  $("#gallery, #select-btn, #play-btn").hide();
+  $("#selection, #masks, #remove-btn, #clear-btn, #save-btn").show();
+  $("#gallery, #select-btn, #cancel-btn, #play-btn").hide();
   $('#galleries option[value=""]').prop('selected', true);
 };
 
@@ -77,8 +79,16 @@ var addToSelection = () => {
   showSelection();
 };
 
+var cancelSearch = () => {
+  showSelection();
+};
+
 var removeFromSelection = () => {
   $("#selection .selected").remove();
+};
+
+var clearSelection = () => {
+  $("#selection").empty();
 };
 
 var save = () => {
