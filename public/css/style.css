@@ -1,5 +1,6 @@
 body, html {
     margin: 0;
+    font-family: sans-serif;
 }
 
 input, select {
@@ -19,7 +20,7 @@ input, select {
     flex-direction: column;
 }
 
-#gallery, #selection {
+#gallery, #selection, #masks {
     padding-top: 130px;
     text-align: center;
 }
@@ -30,10 +31,38 @@ input, select {
     box-sizing: border-box;
     position: relative;
     vertical-align: middle;
+    cursor: pointer;
 }
 
 .image.selected {
     background: #00c4ff;
+}
+
+.image.no-mask {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#masks {
+    border-top: 1px solid #dadada;
+    padding-top: 50px;
+    margin-top: 50px;
+}
+
+#masks::before {
+    content: 'MASKS';
+    display: block;
+    color: #dadada;
+    font-weight: bolder;
+    margin-bottom: 50px;
+}
+
+#masks .image {
+    max-width: 150px;
+    border-radius: 5%;
+    overflow: hidden;
+    border: 1px solid #dadada;
+    margin: 3%
 }
 
 img {

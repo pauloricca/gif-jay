@@ -16,6 +16,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
-app.use('/gif', express.static('projection/data'));
+app.use('/gif', express.static('projection/data/galleries'));
+app.use('/mask', express.static('projection/data/masks'));
 
 module.exports = app;

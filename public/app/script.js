@@ -5,11 +5,13 @@ $(() => {
   $("#save-btn").on('click', save);
   $("#play-btn").on('click', play);
   $("#query-input").on("keypress", (e) => { e.which == 13 && loadNewImages(); return true; }  );
-  $("body").on("click", ".image", select)
+  $("body").on("click", ".image", select);
+  $("#masks").on("click", ".image", selectMask);
   $("#galleries").on('change', openGallery);
   $("#colour").on('change', changeColour);
   showSelection();
   loadGalleries();
+  loadMasks();
 });
 
 var lastQuery = '';
@@ -29,6 +31,20 @@ var loadNewImages = () => {
   }
 };
 
+var selectMask = () => {
+  setTimeout(() => {
+    const $selectedMask = $("#masks .image.selected");
+    const maskFilePath = $selectedMask.find('img').attr('src');
+    var maskFileName = 'none';
+    console.log('paulo ', maskFilePath, $selectedMask, $selectedMask.find('img'));
+    if (maskFilePath) {
+      maskFileName = maskFilePath.replace('mask/', '');
+    }
+    $.getJSON("api/masks/" + maskFileName);
+    $("#masks .image.selected").removeClass('selected');
+  }, 500);
+};
+
 var play = () => {
   if (selectedGallery) {
     $.getJSON("api/galleries/" + selectedGallery + '/play');
@@ -45,12 +61,12 @@ var clearGallery = () => {
 };
 
 var showGallery = () => {
-  $("#selection, #remove-btn, #save-btn, #play-btn").hide();
+  $("#selection, #masks, #remove-btn, #save-btn, #play-btn").hide();
   $("#gallery, #select-btn").show();
 };
 
 var showSelection = () => {
-  $("#selection, #remove-btn, #save-btn").show();
+  $("#selection, #masks, #remove-btn, #save-btn").show();
   $("#gallery, #select-btn, #play-btn").hide();
   $('#galleries option[value=""]').prop('selected', true);
 };
@@ -98,6 +114,16 @@ var loadGalleries = () => {
   );
 };
 
+var loadMasks = () => {
+  $("#masks").empty();
+  $("<div class='image no-mask'>no mask</div>").appendTo("#masks");
+  $.getJSON("api/masks/", (data) =>
+    $.each(data.masks, (_, src) =>
+      $("<div class='image'><img src='mask/" + src + "'/></div>").appendTo("#masks")
+    )
+  );
+};
+
 var openGallery = () => {
   selectedGallery = $('#galleries').find(":selected").val();
   if (selectedGallery) {
@@ -108,6 +134,7 @@ var openGallery = () => {
         $("<div class='image'><img src='gif/" + selectedGallery + '/' + gif + "'/></div>").appendTo("#gallery")
       )
     );
+    $("#masks").show();
     $("#play-btn").show();
   }
 }

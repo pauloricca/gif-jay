@@ -61,5 +61,5 @@ typings/
 .next
 
 .DS_Store
-projection/data/*
-!projection/data/*.glsl
+
+projection/data/galleries/*

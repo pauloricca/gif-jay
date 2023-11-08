@@ -10,14 +10,15 @@ float _width = 0;
 float _height = 0;
 PImage preview = null;
 PGraphics previewPG;
+PGraphics maskPG = null;
 int previewScreenshotEvery = 0;
 boolean mouseIsDown = false;
 float time = 0;
 
 boolean useMidiController = false;
-boolean isFullscreen = true;
+boolean isFullscreen = false;
 boolean doPostFX = true;
-boolean showPreview = false;
+boolean showPreview = true;
 boolean liveShaders = true;
 
 ArrayList<Controllable> controllables = null;
@@ -44,7 +45,7 @@ Controllable backgroundSaturation = new Controllable("background saturation", 0,
 Controllable backgroundBrightness = new Controllable("background brightness", 0, 0, 1);
 
 
-Controllable p1 = new Controllable("p1 chromaticAberration", 0.02, 0, 1, 17);
+Controllable p1 = new Controllable("p1 chromaticAberration", 0.02, 0, 0.3, 17);
 Controllable p2 = new Controllable("p2 scale x", 0.7, 0, 1, 18);
 Controllable p3 = new Controllable("p3 flow x", 0.05, 0, 1, 19);
 Controllable p4 = new Controllable("p4 distortion", 0, 0, 1, 20);
@@ -69,6 +70,8 @@ float programmeFadeSpeed = 0.03;
 String currentMainShaderName = "noise"; 
 String currentColourShaderName = null;
 String currentPostFXShaderName = "bloom"; 
+String currentMaskFileName = null;
+boolean loadNewMask = false;
 
 void setup() {
   //fullScreen(P3D, 2); 
@@ -89,7 +92,6 @@ void setup() {
   
   initServer();
   
-  noCursor();
   pixelDensity(1);
   pg = createGraphics(width, height, P3D);
   base = createGraphics(width, height, P3D);
@@ -107,11 +109,11 @@ void setup() {
 
 void loadShaders() {
   if (currentColourShaderName == null) colourShader = null;
-  else colourShader = loadShader(currentColourShaderName + ".glsl");
-  mainShader = loadShader(currentMainShaderName + ".glsl");
+  else colourShader = loadShader("shaders/" + currentColourShaderName + ".glsl");
+  mainShader = loadShader("shaders/" + currentMainShaderName + ".glsl");
   mainShader.set("resolution", float(pg.width), float(pg.height));
-  postFXShader = loadShader(currentPostFXShaderName + ".glsl");
-  postFXShader.set("resolution", float(pg.width), float(pg.height)); // paulo
+  postFXShader = loadShader("shaders/" + currentPostFXShaderName + ".glsl");
+  postFXShader.set("resolution", float(pg.width), float(pg.height));
 }
 
 void updateShaders() {
@@ -132,6 +134,15 @@ void updateShaders() {
 
 void draw() {
   try {
+    if (loadNewMask) {
+      if (currentMaskFileName != null) {
+        loadMask(currentMaskFileName);
+      } else {
+        maskPG = null;
+      }
+      loadNewMask = false;
+    }
+    
     time += timeIncrement.val() * (1/frameRate);
     
     if(liveShaders && shaderLoadTimer < 0) { loadShaders(); shaderLoadTimer = shaderLoadEvery; }
@@ -151,6 +162,14 @@ void draw() {
     if (doPostFX && postFXStrength.val() > 0) pg.filter(postFXShader);
     
     image(pg, 0, 0, width, height);
+    
+    if (maskPG != null) {
+      // For some reason the resulting maskPG always has a shade of white, so are having to use MULTIPLY blend mode here
+      pushStyle();
+      blendMode(MULTIPLY);
+      image(maskPG, 0, 0);
+      popStyle();
+    }
  
     
     if (showPreview) {
@@ -210,24 +229,51 @@ void setProgramme(Programme programme) {
   currentProgrammeMultiplier = 0;
 }
 
-
-
-
-
-void setup_old()
-{
-  //fullScreen();
-  //noCursor();
-  size(400, 400);
-  background(0);
-  frameRate(25);
-  
-  initServer();
+// Draws a black masked image onto maskPG, with pre-calculated transparency
+void loadMask(String fileName) {
+  if (fileName == null || fileName == "") {
+    maskPG = null;
+  } else {
+    PImage maskImage = loadImage("masks/" + fileName);
+    maskPG = createGraphics(width, height, P3D);
+    PGraphics maskImagePG = createGraphics(width, height, P3D);
+    PGraphics maskedRectPG = createGraphics(width, height, P3D);
+    
+    float imageSizeRatio = float(maskImage.width) / float(maskImage.height);
+    float targetSizeRatio = float(maskPG.width) / float(maskPG.height);
+    float targetHeight;
+    float targetWidth;
+    
+    if (imageSizeRatio < targetSizeRatio) {
+       targetHeight = float(maskPG.height);
+       targetWidth = targetHeight * imageSizeRatio;
+    } else {
+      targetWidth = float(maskPG.width);
+      targetHeight = targetWidth * float(maskImage.height) / float(maskImage.width);
+    }
+    
+    maskImagePG.beginDraw();
+    maskImagePG.background(255);
+    maskImagePG.image(maskImage,
+      - (targetWidth - float(maskPG.width)) / 2,
+      - (targetHeight - float(maskPG.height)) / 2, 
+      targetWidth,
+      targetHeight
+    );
+    maskImagePG.filter(INVERT);
+    maskImagePG.endDraw();
+    
+    // Strangely the images were getting a bit darker when using the .mask method below, so this works as well since we're blending it anyway
+    maskPG = maskImagePG;
+    
+    //maskedRectPG.beginDraw();
+    //maskedRectPG.background(0);
+    //maskedRectPG.endDraw();
+    //maskedRectPG.mask(maskImagePG);
+    
+    //maskPG.beginDraw();
+    //maskPG.image(maskedRectPG, 0, 0);
+    //maskPG.endDraw();
+  }
 }
-
-void draw_old()
-{
-  background(0);
-}
-
   

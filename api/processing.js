@@ -9,6 +9,13 @@ exports.playGallery = (name) => {
   });
 }
 
+exports.playMask = (file) => {
+  const client = new Client('127.0.0.1', processingPort);
+  client.send('/mask', file, () => {
+    client.close();
+  });
+}
+
 exports.setSetting = (setting, value) => {
   const client = new Client('127.0.0.1', processingPort);
   client.send('/setting', setting, value, () => {
