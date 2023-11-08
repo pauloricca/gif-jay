@@ -9,7 +9,7 @@ uniform sampler2D srcTex;
 varying vec4 vertTexCoord;
 
 uniform float time;
-uniform float p1;
+uniform float p1; // chromatic aberration
 uniform float p2; // scale x, e.g. 0.7
 uniform float p3; // flow x, e.g. 0.2
 uniform float p4; // distortion
@@ -46,7 +46,8 @@ vec4 noised(vec3 x);
 vec2 getVariation(vec2 p);
 vec2 polar(vec2 p);
 
-float distortion = p4;
+float distortion = p4 * 5;
+float chromaticAberration = p1;
 
 void main( void ) {
     vec2 position = (gl_FragCoord.xy / resolution.xy) - 0.5;
@@ -57,15 +58,15 @@ void main( void ) {
     float dist = distance(position.xy, vec2(.0,.0));
     mat2 RotationMatrix = r2d(time * (dist / noised(vec3(position.x, position.y, time)).x / 2000.));
     
-    vec2 vari = getVariation(RotationMatrix * position) / 1;
+    vec2 vari = getVariation(RotationMatrix * position) / 1.5;
     newPosition = position + vari * 0.05 * distortion;
     //newPosition = position + vari * 0.2 * distortion;
     //newPosition = position * 4.1;
     
     gl_FragColor = vec4( 
-        texture2D(srcTex, newPosition + 0.5).r, 
-        texture2D(srcTex, newPosition + 0.5 + p1 * noised(vec3(position.x * 4.0, position.y * 4.0, time * 2)).x * 0.02).g, 
-        texture2D(srcTex, newPosition + 0.5 - p1 * noised(vec3(position.x * 4.0, position.y * 4.0, time * 2)).y * 0.02).b, 
+        texture2D(srcTex, newPosition + 0.5 + p1 * noised(vec3(position.x * 4.0, position.y * 4.0, time * 2)).x * 2 * chromaticAberration).r, 
+        texture2D(srcTex, newPosition + 0.5 + p1 * noised(vec3(position.x * 4.0, position.y * 4.0, time * 2)).x * chromaticAberration).g, 
+        texture2D(srcTex, newPosition + 0.5 - p1 * noised(vec3(position.x * 4.0, position.y * 4.0, time * 2)).y * 2 * chromaticAberration).b, 
     1 );
 }
 
@@ -89,7 +90,7 @@ vec2 getVariation(vec2 v) {
 	//v = hyperbolic(v, distortion * 0.6);
     //v = hyperbolic(v, phase);
     v = sinusoidal(v, distortion+phase/(p3 * 30.));
-	//v = cosinusoidal(v, distortion);
+	  //v = cosinusoidal(v, distortion);
     //v = pdj(v, phase * distortion);
 
     //v = d_pdj(v, phase * distortion);
