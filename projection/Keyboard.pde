@@ -18,8 +18,8 @@ void keyboardPressed(int key) {
     switch (key) {
       case 113: currentMainShaderName = "noise"; loadShaders(); break; // q
       case 119: currentMainShaderName = "variations"; loadShaders(); break; // w
-      case 101: break; // e
-      case 114: break; // r
+      case 101: currentMainShaderName = "variations-chrome-waves"; loadShaders(); break; // e
+      case 114: currentMainShaderName = "variations-chrome"; loadShaders(); break; // r
       
       case 97: currentPostFXShaderName = "bloom"; loadShaders(); break; // a
       case 115: currentPostFXShaderName = "glitch"; loadShaders(); break; // s
