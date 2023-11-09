@@ -87,10 +87,10 @@ vec2 getVariation(vec2 v) {
     //v = julia(v, distortion+phase/(p3 * 30.));
 	//v = sech(v, distortion);
 
-	v = hyperbolic(v, distortion * 0.1);
+	v = hyperbolic(v, distortion * 0.6);
     //v = hyperbolic(v, phase);
     // v = sinusoidal(v, distortion+phase/(p3 * 30.));
-	  //v = cosinusoidal(v, distortion);
+	  v = cosinusoidal(v, distortion);
     // v = pdj(v, phase * distortion);
 
     // v = pdj(-v, distortion);
@@ -103,7 +103,7 @@ vec2 getVariation(vec2 v) {
     
     // for(int i=0;i<2;i++) v = hyperbolic(v,phase/distortion);
 	
-    v = addF(pdj(v,phase),mulF(hyperbolic(v,phase),sech(v,distortion*0.01)));
+    // v = addF(pdj(v,phase),mulF(hyperbolic(v,phase),sech(v,distortion*0.01)));
 
     return v;
 }

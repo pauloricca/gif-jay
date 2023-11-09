@@ -103,7 +103,7 @@ vec2 getVariation(vec2 v) {
     
     // for(int i=0;i<2;i++) v = hyperbolic(v,phase/distortion);
 	
-    v = addF(pdj(v,phase),mulF(hyperbolic(v,phase),sech(v,distortion*0.01)));
+    // v = addF(pdj(v,phase),mulF(hyperbolic(v,phase),sech(v,distortion*0.01)));
 
     return v;
 }
