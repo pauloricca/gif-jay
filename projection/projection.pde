@@ -78,6 +78,7 @@ void setup() {
   size(600, 400, P3D); 
   
   movieProgramme = new MovieProgramme(this);
+  movieProgramme.loadDir("drew");
 
   programmes.add(currentProgramme = movieProgramme);
   programmes.add(new CircleProgramme(true, 1, false));

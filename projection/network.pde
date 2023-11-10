@@ -7,7 +7,6 @@ int port = 10002;
 
 void initServer() {
   oscP5 = new OscP5(this, port);
-  movieProgramme.loadDir("drew");
 }
 
 /* incoming osc message are forwarded to the oscEvent method. */
