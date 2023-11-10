@@ -62,31 +62,59 @@ public class CircleProgramme implements Programme {
   boolean hasFill;
   int nCircles;
   boolean rotating;
+  float[] phases;
+  boolean growing;
+  boolean multicoloured;
   
-  public CircleProgramme(boolean hasFill, int nCircles, boolean rotating) {
+  // Growing means their radiuses animate (with random phases) 
+  public CircleProgramme(boolean hasFill, int nCircles, boolean rotating, boolean growing, boolean multicoloured) {
     this.hasFill = hasFill;
     this.nCircles = nCircles;
     this.rotating = rotating;
+    this.growing = growing;
+    this.multicoloured = multicoloured;
+    
+    if (growing) {
+      this.phases = new float[nCircles];
+      for(int i = 0; i < nCircles; i++) {
+        this.phases[i] = random(100);
+      }
+    }
   }
   
   public void draw(PGraphics pg, float strength) {
-    float radius = strength * pg.width * 0.7;
+    float maxRadius = strength * pg.height * 0.8;
     
     pg.ellipseMode(CENTER);
     
     if(hasFill) pg.noStroke();
     else pg.noFill();
     
-    for(int i = 1; i <= this.nCircles; i++) {
-      pg.strokeWeight(strength * (4 + 12 * (i / float(this.nCircles))));
-      float radiusMultiplier = 0.1 + pow((i / float(this.nCircles)), 1.5) * 0.9;
+    for(int i = 0; i < this.nCircles; i++) {
+      pg.strokeWeight(strength * (4 + 12 * ((i + 1) / float(this.nCircles))));
+      float radius;
+      
+      if (this.growing) {
+        radius = maxRadius * sin(this.phases[i] + time);
+      } else {
+        float radiusMultiplier = 0.1 + pow(((i + 1) / float(this.nCircles)), 1.5) * 0.9;
+        radius = maxRadius * radiusMultiplier;
+      }
+      
+      if (this.multicoloured) {
+        pg.colorMode(HSB, 1);
+        float circleHue = 0.5 + sin(this.phases[i] + time * 2) / 2;
+        if(hasFill) pg.fill(circleHue, saturation.val(), brightness.val());
+        else pg.stroke(circleHue, saturation.val(), brightness.val());
+      }
+ 
       pg.pushMatrix();
       pg.translate(pg.width/2, pg.height/2);
       if (rotating) {
         pg.rotateY(time * i);
         pg.rotateX(time * i * 0.2);
       }
-      pg.ellipse(0, 0, radius * radiusMultiplier, radius * radiusMultiplier);
+      pg.ellipse(0, 0, radius, radius);
       pg.popMatrix();
     }
   }

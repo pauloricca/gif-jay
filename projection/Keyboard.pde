@@ -6,11 +6,11 @@ void keyboardPressed(int key) {
   int programmeNumber = -1;
   
   // Numeric keys
-  if(key == 96) programmeNumber = 0; // `
-  if(key >= 49 && key <= 57) programmeNumber = key - 48;
-  if(key == 48) programmeNumber = 10; // 0
-  if(key == 45) programmeNumber = 11; // -
-  if(key == 61) programmeNumber = 12; // =
+  //if(key == 96) programmeNumber = 0; // `
+  if(key >= 49 && key <= 57) programmeNumber = key - 49;
+  if(key == 48) programmeNumber = 9; // 0
+  if(key == 45) programmeNumber = 10; // -
+  if(key == 61) programmeNumber = 11; // =
   
   if (programmeNumber > -1 && programmeNumber < programmes.size()) {
     setProgramme(programmes.get(programmeNumber));

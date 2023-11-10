@@ -81,10 +81,11 @@ void setup() {
   movieProgramme.loadDir("drew");
 
   programmes.add(currentProgramme = movieProgramme);
-  programmes.add(new CircleProgramme(true, 1, false));
-  programmes.add(new CircleProgramme(false, 1, false));
-  programmes.add(new CircleProgramme(false, 4, false));
-  programmes.add(new CircleProgramme(false, 5, true));
+  programmes.add(new CircleProgramme(true, 1, false, false, false));
+  programmes.add(new CircleProgramme(false, 1, false, false, false));
+  programmes.add(new CircleProgramme(false, 4, false, false, false));
+  programmes.add(new CircleProgramme(false, 12, false, true, true));
+  programmes.add(new CircleProgramme(false, 5, true, true, true));
   programmes.add(new ArcProgramme(false, 30));
   programmes.add(new ArcProgramme(false, 80));
   programmes.add(new HorizonProgramme());
