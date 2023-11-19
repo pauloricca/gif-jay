@@ -19,7 +19,7 @@ boolean useMidiController = false;
 boolean isFullscreen = false;
 boolean doPostFX = true;
 boolean showPreview = true;
-boolean liveShaders = true;
+boolean liveShaders = false;
 
 ArrayList<Controllable> controllables = null;
 
@@ -36,6 +36,10 @@ Controllable highAttack = new Controllable("high attack", 1, 0, 1);
 
 Controllable timeIncrement = new Controllable("time increment", 0.3, 0, 3);
 Controllable roamingSpeed = new Controllable("roaming speed", 0.01, 0, 0.2);
+
+Controllable restartEvery = new Controllable("restartEvery", 0.5, 0, 3); // restarts movie every. 0 means don't restart before the end.
+Controllable startingPoint = new Controllable("startingPoint", 0, 0, 3); // starting point of the movie
+Controllable changeMovieController = new Controllable("changeMovieController", 0, 0, 1); // changes movie when value > 0.5
 
 Controllable hue = new Controllable("hue", 0.5, 0, 1, 21);
 Controllable saturation = new Controllable("saturation", 0, 0, 1, 22);
@@ -78,7 +82,7 @@ void setup() {
   size(600, 400, P3D); 
   
   movieProgramme = new MovieProgramme(this);
-  movieProgramme.loadDir("drew");
+  movieProgramme.loadDir("test");
 
   programmes.add(currentProgramme = movieProgramme);
   programmes.add(new CircleProgramme(true, 1, false, false, false));

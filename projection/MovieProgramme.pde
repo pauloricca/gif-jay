@@ -9,7 +9,8 @@ void movieEvent(Movie m) {
 
 public class MovieProgramme implements Programme {
   private PApplet pApplet;
-  private float changeEvery = 2; // In seconds
+  private float changeEvery = 2; // In seconds. If 0, it doesn't change automatically.
+  private float minChangeTime = 0.5; // When changing using the changeMovieController, this is the minimum time between changes
 
   private ArrayList<String> moviePaths = new ArrayList<String>();
   private Movie currentMovie;
@@ -17,6 +18,7 @@ public class MovieProgramme implements Programme {
   
   private int nextMovieIndex = 0;
   private int lastChange = millis();
+  private int lastRestart = millis();
   
   // As oppose to "Fill" as in the whole frame will fit the screen instead of filling it (we're checking for file names ending in "-fit.*") 
   private boolean isCurrentMovieFit = false;
@@ -26,25 +28,40 @@ public class MovieProgramme implements Programme {
     this.pApplet = pApplet;
   }
   
+  private void changeMovie() {
+    currentMovie.stop();
+    isCurrentMovieFit = isNextMovieFit;
+    currentMovie = nextMovie;
+    currentMovie.jump(startingPoint.val());
+    currentMovie.play();
+    currentMovie.loop();
+    nextMovieIndex = (nextMovieIndex + 1) % moviePaths.size();
+    String nextMoviePath = moviePaths.get(nextMovieIndex);
+    nextMovie = new Movie(this.pApplet, nextMoviePath);
+    nextMovie.play();
+ 
+    if (nextMoviePath.endsWith("-fit.mov") || nextMoviePath.endsWith("-fit.mp4")) isNextMovieFit = true;
+    else isNextMovieFit = false;
+  }
+  
   public void draw(PGraphics pg, float strength) {
     if (moviePaths.size() == 0) return;
   
     int currentTime = millis();
-    if (lastChange + (changeEvery * 1000) < currentTime && moviePaths.size() > 1) {
-      currentMovie.stop();
-      isCurrentMovieFit = isNextMovieFit;
-      currentMovie = nextMovie;
-      currentMovie.jump(0);
-      currentMovie.play();
-      currentMovie.loop();
-      nextMovieIndex = (nextMovieIndex + 1) % moviePaths.size();
-      String nextMoviePath = moviePaths.get(nextMovieIndex);
-      nextMovie = new Movie(this.pApplet, nextMoviePath);
-      nextMovie.play();
+
+    if (changeEvery > 0 && lastChange + (changeEvery * 1000) < currentTime && moviePaths.size() > 1) {
+      changeMovie();
       lastChange = currentTime;
- 
-      if (nextMoviePath.endsWith("-fit.mov") || nextMoviePath.endsWith("-fit.mp4")) isNextMovieFit = true;
-      else isNextMovieFit = false;
+    }
+    
+    if (changeMovieController.val() > 0.5 && lastChange + (minChangeTime * 1000) < currentTime) {
+      changeMovie();
+      lastChange = currentTime;
+    }
+    
+    if (restartEvery.val() > 0 && lastRestart + (restartEvery.val() * 1000) < currentTime) {
+      currentMovie.jump(startingPoint.val());
+      lastRestart = currentTime;
     }
     
     float movieSizeRatio = float(currentMovie.width) / float(currentMovie.height);
@@ -92,6 +109,7 @@ public class MovieProgramme implements Programme {
       if (newMoviePaths.size() > 0) {
         currentMovie = new Movie(this.pApplet, newMoviePaths.get(0));
         currentMovie.play();
+        currentMovie.jump(startingPoint.val());
         currentMovie.loop();
         if (newMoviePaths.size() > 1) {
           nextMovieIndex = 1;
