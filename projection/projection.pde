@@ -37,10 +37,6 @@ Controllable highAttack = new Controllable("high attack", 1, 0, 1);
 Controllable timeIncrement = new Controllable("time increment", 0.3, 0, 3);
 Controllable roamingSpeed = new Controllable("roaming speed", 0.01, 0, 0.2);
 
-Controllable restartEvery = new Controllable("restartEvery", 0.5, 0, 3); // restarts movie every. 0 means don't restart before the end.
-Controllable startingPoint = new Controllable("startingPoint", 0, 0, 3); // starting point of the movie
-Controllable changeMovieController = new Controllable("changeMovieController", 0, 0, 1); // changes movie when value > 0.5
-
 Controllable hue = new Controllable("hue", 0.5, 0, 1, 21);
 Controllable saturation = new Controllable("saturation", 0, 0, 1, 22);
 Controllable brightness = new Controllable("brightness", 1, 0, 1, 23);
@@ -61,6 +57,10 @@ Controllable p8 = new Controllable("p8 octave falloff", 0.95, 0, 1, 4);
 
 Controllable baseStrength = new Controllable("base strength", 1, 0, 1);
 Controllable postFXStrength = new Controllable("post fx", 0.5, 0, 1);
+
+Controllable restartEvery = new Controllable("restart every", 0.5, 0, 3); // restarts movie every. 0 means don't restart before the end.
+Controllable startingPoint = new Controllable("starting point", 0, 0, 3); // starting point of the movie
+Controllable changeMovieController = new Controllable("change movie", 0, 0, 1); // changes movie when value > 0.5
 
 MovieProgramme movieProgramme;
 

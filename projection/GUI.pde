@@ -13,7 +13,7 @@ void setupGUI() {
 class Controls extends PApplet {
 
   int w, h;
-  int margin = 30;
+  int margin = 15;
   PApplet parent;
   ControlP5 cp5;
 
@@ -193,9 +193,15 @@ class Controls extends PApplet {
     ctrlPosX = margin;
     ctrlPosY = margin;
     ctrlPosYInc = 46;
+    int sliderWidth = 270;
     
     for (int i = 0; i < controllables.size(); i++) {
       controllable = controllables.get(i);
+      
+      if (ctrlPosY > height - 100) {
+        ctrlPosY = margin;
+        ctrlPosX = margin + sliderWidth + 190;
+      }
       
       // ignore controllers that already have sliders
       if(controllable.slider != null) continue;
@@ -207,7 +213,7 @@ class Controls extends PApplet {
          .setColorForeground(color(150, 0, 0))
          .setColorActive(color(255, 0, 0))
          .setPosition(ctrlPosX, ctrlPosY)
-         .setSize(30, sliderHeight + 15)
+         .setSize(15, sliderHeight + 15)
          .setValue(false);
       controllable.lowToggle = lowToggle;
       
@@ -217,8 +223,8 @@ class Controls extends PApplet {
          .setColorBackground(color(0, 100, 0))
          .setColorForeground(color(0, 150, 0))
          .setColorActive(color(0, 255, 0))
-         .setPosition(ctrlPosX + 40, ctrlPosY)
-         .setSize(30, sliderHeight + 15)
+         .setPosition(ctrlPosX + 25, ctrlPosY)
+         .setSize(15, sliderHeight + 15)
          .setValue(false);
       controllable.highToggle = highToggle;
       
@@ -228,8 +234,8 @@ class Controls extends PApplet {
          .setColorBackground(color(0, 0, 100))
          .setColorForeground(color(0, 0, 150))
          .setColorActive(color(0, 0, 255))
-         .setPosition(ctrlPosX + 80, ctrlPosY)
-         .setSize(30, sliderHeight + 15)
+         .setPosition(ctrlPosX + 50, ctrlPosY)
+         .setSize(15, sliderHeight + 15)
          .setValue(false);
       controllable.roamingToggle = roamingToggle;
       
@@ -238,9 +244,9 @@ class Controls extends PApplet {
          .setRange(controllable.minVal, controllable.maxVal)
          .setValue(controllable.value)
          .plugTo(controllable, "value")
-         .setPosition(ctrlPosX + 120, ctrlPosY)
+         .setPosition(ctrlPosX + 75, ctrlPosY)
          .setScrollSensitivity(0.1)
-         .setSize(400, 25);
+         .setSize(sliderWidth, 25);
       controllable.slider = slider;
       
       // Auto Min Slider
@@ -250,8 +256,8 @@ class Controls extends PApplet {
          .setValue(controllable.autoMinVal)
          .plugTo(controllable, "autoMinVal")
          .setScrollSensitivity(0.1)
-         .setPosition(ctrlPosX + 120, ctrlPosY + 25)
-         .setSize(400, 6);
+         .setPosition(ctrlPosX + 75, ctrlPosY + 25)
+         .setSize(sliderWidth, 6);
       
       // Auto Max Slider
       cp5.addSlider(controllable.name + "-auto-max")
@@ -260,8 +266,8 @@ class Controls extends PApplet {
          .setValue(controllable.autoMaxVal)
          .plugTo(controllable, "autoMaxVal")
          .setScrollSensitivity(0.1)
-         .setPosition(ctrlPosX + 120, ctrlPosY + 31)
-         .setSize(400, 6);
+         .setPosition(ctrlPosX + 75, ctrlPosY + 31)
+         .setSize(sliderWidth, 6);
       
       ctrlPosY += ctrlPosYInc;
     }  
