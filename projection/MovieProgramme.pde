@@ -9,8 +9,6 @@ void movieEvent(Movie m) {
 
 public class MovieProgramme implements Programme {
   private PApplet pApplet;
-  private float changeEvery = 2; // In seconds. If 0, it doesn't change automatically.
-  private float minChangeTime = 0.5; // When changing using the changeMovieController, this is the minimum time between changes
 
   private ArrayList<String> moviePaths = new ArrayList<String>();
   private Movie currentMovie;
@@ -32,7 +30,7 @@ public class MovieProgramme implements Programme {
     currentMovie.stop();
     isCurrentMovieFit = isNextMovieFit;
     currentMovie = nextMovie;
-    currentMovie.jump(startingPoint.val());
+    currentMovie.jump(startingPoint.val() * currentMovie.duration());
     currentMovie.play();
     currentMovie.loop();
     nextMovieIndex = (nextMovieIndex + 1) % moviePaths.size();
@@ -49,21 +47,26 @@ public class MovieProgramme implements Programme {
   
     int currentTime = millis();
 
-    if (changeEvery > 0 && lastChange + (changeEvery * 1000) < currentTime && moviePaths.size() > 1) {
+    if (lastChange + (maxChangeTime.val() * 1000) < currentTime && moviePaths.size() > 1) {
       changeMovie();
       lastChange = currentTime;
     }
     
-    if (changeMovieController.val() > 0.5 && lastChange + (minChangeTime * 1000) < currentTime) {
+    if (changeMovieController.val() > 0.5 && lastChange + (minChangeTime.val() * 1000) < currentTime) {
       changeMovie();
       lastChange = currentTime;
     }
     
     if (restartEvery.val() > 0 && lastRestart + (restartEvery.val() * 1000) < currentTime) {
-      currentMovie.jump(startingPoint.val());
+      currentMovie.jump(startingPoint.val() * currentMovie.duration());
       lastRestart = currentTime;
     }
     
+    if (restartMovieController.val() > 0.5 && lastRestart + (minRestartTime.val() * 1000) < currentTime) {
+      currentMovie.jump(startingPoint.val() * currentMovie.duration());
+      lastRestart = currentTime;
+    }
+
     float movieSizeRatio = float(currentMovie.width) / float(currentMovie.height);
     float screenSizeRatio = float(base.width) / float(base.height);
     float renderHeight;
@@ -109,7 +112,7 @@ public class MovieProgramme implements Programme {
       if (newMoviePaths.size() > 0) {
         currentMovie = new Movie(this.pApplet, newMoviePaths.get(0));
         currentMovie.play();
-        currentMovie.jump(startingPoint.val());
+        currentMovie.jump(startingPoint.val() * currentMovie.duration());
         currentMovie.loop();
         if (newMoviePaths.size() > 1) {
           nextMovieIndex = 1;

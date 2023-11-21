@@ -20,6 +20,9 @@ boolean isFullscreen = false;
 boolean doPostFX = true;
 boolean showPreview = true;
 boolean liveShaders = false;
+boolean useCamera = true;
+
+String initialGallery = "night vision";
 
 ArrayList<Controllable> controllables = null;
 
@@ -58,9 +61,13 @@ Controllable p8 = new Controllable("p8 octave falloff", 0.95, 0, 1, 4);
 Controllable baseStrength = new Controllable("base strength", 1, 0, 1);
 Controllable postFXStrength = new Controllable("post fx", 0.5, 0, 1);
 
-Controllable restartEvery = new Controllable("restart every", 0.5, 0, 3); // restarts movie every. 0 means don't restart before the end.
-Controllable startingPoint = new Controllable("starting point", 0, 0, 3); // starting point of the movie
+Controllable minChangeTime = new Controllable("min change time", 0.5, 0.01, 3); // minimum interval between movie changes
+Controllable maxChangeTime = new Controllable("max change time", 2, 0.01, 6); // maximum interval between movie changes
+Controllable restartEvery = new Controllable("restart every", 6, 0, 6); // restarts movie every. 0 means don't restart before the end.
+Controllable startingPoint = new Controllable("starting point", 0, 0, 1); // starting point of the movie, from 0 to 1
 Controllable changeMovieController = new Controllable("change movie", 0, 0, 1); // changes movie when value > 0.5
+Controllable restartMovieController = new Controllable("restart movie", 0, 0, 1); // restarts movie when value > 0.5
+Controllable minRestartTime = new Controllable("min restart time", 0.1, 0.01, 2); // minimum interval between movie restarts
 
 MovieProgramme movieProgramme;
 
@@ -82,9 +89,10 @@ void setup() {
   size(600, 400, P3D); 
   
   movieProgramme = new MovieProgramme(this);
-  movieProgramme.loadDir("test");
+  movieProgramme.loadDir(initialGallery);
 
   programmes.add(currentProgramme = movieProgramme);
+  if (useCamera) programmes.add(new CameraProgramme(this));
   programmes.add(new CircleProgramme(true, 1, false, false, false));
   programmes.add(new CircleProgramme(false, 1, false, false, false));
   programmes.add(new CircleProgramme(false, 4, false, false, false));
@@ -114,12 +122,14 @@ void setup() {
 }
 
 void loadShaders() {
-  if (currentColourShaderName == null) colourShader = null;
-  else colourShader = loadShader("shaders/" + currentColourShaderName + ".glsl");
-  mainShader = loadShader("shaders/" + currentMainShaderName + ".glsl");
-  mainShader.set("resolution", float(pg.width), float(pg.height));
-  postFXShader = loadShader("shaders/" + currentPostFXShaderName + ".glsl");
-  postFXShader.set("resolution", float(pg.width), float(pg.height));
+  try {
+    if (currentColourShaderName == null) colourShader = null;
+    else colourShader = loadShader("shaders/" + currentColourShaderName + ".glsl");
+    mainShader = loadShader("shaders/" + currentMainShaderName + ".glsl");
+    mainShader.set("resolution", float(pg.width), float(pg.height));
+    postFXShader = loadShader("shaders/" + currentPostFXShaderName + ".glsl");
+    postFXShader.set("resolution", float(pg.width), float(pg.height));
+  } catch (Exception e) {println("Error loading shaders");}
 }
 
 void updateShaders() {
