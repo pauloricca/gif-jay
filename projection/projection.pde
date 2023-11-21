@@ -16,11 +16,11 @@ boolean mouseIsDown = false;
 float time = 0;
 
 boolean useMidiController = false;
-boolean isFullscreen = false;
+boolean isFullscreen = true;
+boolean showPreview = false;
 boolean doPostFX = true;
-boolean showPreview = true;
 boolean liveShaders = false;
-boolean useCamera = true;
+boolean useCamera = false;
 
 String initialGallery = "night vision";
 
@@ -85,14 +85,15 @@ String currentMaskFileName = null;
 boolean loadNewMask = false;
 
 void setup() {
-  //fullScreen(P3D, 2); 
-  size(600, 400, P3D); 
+  fullScreen(P3D, 2); 
+  //size(600, 400, P3D); 
   
   movieProgramme = new MovieProgramme(this);
   movieProgramme.loadDir(initialGallery);
 
   programmes.add(currentProgramme = movieProgramme);
   if (useCamera) programmes.add(new CameraProgramme(this));
+  programmes.add(new BandsProgramme(6));
   programmes.add(new CircleProgramme(true, 1, false, false, false));
   programmes.add(new CircleProgramme(false, 1, false, false, false));
   programmes.add(new CircleProgramme(false, 4, false, false, false));

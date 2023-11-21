@@ -103,7 +103,7 @@ public class CircleProgramme implements Programme {
       
       if (this.multicoloured) {
         pg.colorMode(HSB, 1);
-        float circleHue = 0.5 + sin(this.phases[i] + time * 2) / 2;
+        float circleHue = (hue.val() + 0.5 + sin(this.phases[i] + time * 2) / 2) % 1;
         if(hasFill) pg.fill(circleHue, saturation.val(), brightness.val());
         else pg.stroke(circleHue, saturation.val(), brightness.val());
       }
@@ -154,6 +154,43 @@ public class ArcProgramme implements Programme {
         2 * noiseFactor * time * speed + noiseFactor * TWO_PI, 
         2 * noiseFactor * time * speed + noiseFactor * TWO_PI + TWO_PI * 0.5 * strength);
       pg.popMatrix();
+    }
+  }
+}
+
+public class BandsProgramme implements Programme {
+  int nBands;
+  float[] phases;
+  
+  public BandsProgramme(int nBands) {
+    this.nBands = nBands;
+    this.phases = new float[nBands];
+    for(int i = 0; i < nBands; i++) {
+      this.phases[i] = random(10000);
+    }
+  }
+  
+  public void draw(PGraphics pg, float strength) {
+    float maxWidth = strength * (pg.height / this.nBands);
+    
+    pg.noStroke();
+    
+    float[] bandWidths = new float[this.nBands];
+    float totalWidth = 0;
+    
+    for(int i = 0; i < this.nBands; i++) {
+      bandWidths[i] = (0.5 + sin(this.phases[i] + time) / 2) * maxWidth;
+      totalWidth += bandWidths[i];
+    }
+    
+    float bandPosition = (pg.height - totalWidth) / 2;
+    
+    for(int i = 0; i < this.nBands; i++) {
+      pg.colorMode(HSB, 1);
+      float bandHue = (hue.val() + 0.5 + sin(this.phases[i] + time * 2) / 2) % 1;
+      pg.fill(bandHue, saturation.val(), brightness.val());
+      pg.rect(0, bandPosition, pg.width, bandWidths[i]);
+      bandPosition += bandWidths[i];
     }
   }
 }
