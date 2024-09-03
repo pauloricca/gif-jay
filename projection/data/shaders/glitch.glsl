@@ -116,21 +116,22 @@ void main()
     gl_FragColor.b = mix(gl_FragColor.r, texture(texture, vec2(xpos - noise * 0.05 * strength, uv.y)).b, 1.05 - strength);
 
     // white noise
-    if (noise > 0.1) {
-      float whiteNoise = strength * (.7 + .3 * snoise(vec2(time * 10., 0.0))) * snoise(vec2(gl_FragCoord.x, gl_FragCoord.y + relTime) * 100.);
-      gl_FragColor *= noise * 0.7;
-      gl_FragColor += whiteNoise * 0.7;
-    }
+    if (gl_FragColor.r < 0.1 && gl_FragColor.g < 0.1 && gl_FragColor.b < 0.1) {
+      if (noise > 0.1) {
+        float whiteNoise = strength * (.7 + .3 * snoise(vec2(time * 10., 0.0))) * snoise(vec2(gl_FragCoord.x, gl_FragCoord.y + relTime) * 100.);
+        gl_FragColor += whiteNoise;
+      }
 
-    if (noise > 0.2 && noise < 0.3) {
-      gl_FragColor.r += noise * 0.2;
-    }
+      if (noise > 0.2 && noise < 0.3) {
+        gl_FragColor.r += noise * 0.2;
+      }
 
-    if (noise > 0.3 && noise < 0.4) {
-      gl_FragColor.g += noise * 0.7;
-    }
+      if (noise > 0.3 && noise < 0.4) {
+        gl_FragColor.g += noise * 0.7;
+      }
 
-    if (noise > 0.4 && noise < 0.5) {
-      gl_FragColor.b += noise * 0.7;
+      if (noise > 0.4 && noise < 0.5) {
+        gl_FragColor.b += noise * 0.7;
+      }
     }
 }

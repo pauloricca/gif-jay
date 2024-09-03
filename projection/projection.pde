@@ -17,9 +17,9 @@ float time = 0;
 
 boolean useMidiController = false;
 boolean isFullscreen = true;
-boolean showPreview = false;
+boolean showPreview = true;
 boolean doPostFX = true;
-boolean liveShaders = false;
+boolean liveShaders = true;
 boolean useCamera = false;
 
 String initialGallery = "night vision";
@@ -91,10 +91,10 @@ void setup() {
   movieProgramme = new MovieProgramme(this);
   movieProgramme.loadDir(initialGallery);
 
-  programmes.add(currentProgramme = movieProgramme);
+  programmes.add(movieProgramme);
   if (useCamera) programmes.add(new CameraProgramme(this));
   programmes.add(new BandsProgramme(6));
-  programmes.add(new CircleProgramme(true, 1, false, false, false));
+  programmes.add(currentProgramme = new CircleProgramme(true, 1, false, false, false));
   programmes.add(new CircleProgramme(false, 1, false, false, false));
   programmes.add(new CircleProgramme(false, 4, false, false, false));
   programmes.add(new CircleProgramme(false, 12, false, true, true));
