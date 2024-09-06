@@ -96,7 +96,7 @@ void setup() {
   programmes.add(movieProgramme);
   if (useCamera) programmes.add(new CameraProgramme(this));
   programmes.add(new BandsProgramme(6));
-  programmes.add(currentProgramme = new CircleProgramme(true, 1, false, false, false));
+  programmes.add(new CircleProgramme(true, 1, false, false, false));
   programmes.add(new CircleProgramme(false, 1, false, false, false));
   programmes.add(new CircleProgramme(false, 4, false, false, false));
   programmes.add(new CircleProgramme(false, 12, false, true, true));
@@ -106,6 +106,8 @@ void setup() {
   programmes.add(new HorizonProgramme());
   programmes.add(new BarsProgramme(5));
   programmes.add(new CubeProgramme());
+  
+  currentProgramme = movieProgramme;
   
   initServer();
   
@@ -117,11 +119,13 @@ void setup() {
   if(useMidiController) initMIDI();
   setupGUI();
   setupAudio();
-  loadShaders();
   _width = width;
   _height = height;
   preview = new PImage(width, height);
   previewPG = createGraphics(width/8, height/8, P3D);
+  
+  loadSettings();
+  loadShaders();
 }
 
 void loadShaders() {

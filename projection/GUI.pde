@@ -2,6 +2,8 @@ import controlP5.*;
 
 Controls cf;
 
+boolean settingUpGUI = true;
+
 ControlP5 cp5;
 Toggle playingToggle;
 Slider centreXSlider, centreYSlider;
@@ -187,14 +189,13 @@ class Controls extends PApplet {
        .setSize(audioSliderWidth, sliderHeight);
     ctrlPosY += ctrlPosYInc;
     
-    
-    
-    // Other controller sliders
     ctrlPosX = margin;
     ctrlPosY = margin;
     ctrlPosYInc = 46;
     int sliderWidth = 270;
     
+    // Other controller sliders
+  
     for (int i = 0; i < controllables.size(); i++) {
       controllable = controllables.get(i);
       
@@ -214,7 +215,7 @@ class Controls extends PApplet {
          .setColorActive(color(255, 0, 0))
          .setPosition(ctrlPosX, ctrlPosY)
          .setSize(15, sliderHeight + 15)
-         .setValue(false);
+         .setValue(controllable.isLowAutomation);
       controllable.lowToggle = lowToggle;
       
       // High Toggle
@@ -225,7 +226,7 @@ class Controls extends PApplet {
          .setColorActive(color(0, 255, 0))
          .setPosition(ctrlPosX + 25, ctrlPosY)
          .setSize(15, sliderHeight + 15)
-         .setValue(false);
+         .setValue(controllable.isHighAutomation);
       controllable.highToggle = highToggle;
       
       // Roaming Toggle
@@ -236,7 +237,7 @@ class Controls extends PApplet {
          .setColorActive(color(0, 0, 255))
          .setPosition(ctrlPosX + 50, ctrlPosY)
          .setSize(15, sliderHeight + 15)
-         .setValue(false);
+         .setValue(controllable.isRoaming);
       controllable.roamingToggle = roamingToggle;
       
       // Slider
@@ -270,18 +271,24 @@ class Controls extends PApplet {
          .setSize(sliderWidth, 6);
       
       ctrlPosY += ctrlPosYInc;
-    }  
+    }
+    
+    cp5.addButton("Save Settings")
+     .setValue(100)
+     .setPosition(ctrlPosX, ctrlPosY)
+     .setSize(80, 40);
+     
+    ctrlPosY += ctrlPosYInc;
+    
+    settingUpGUI = false;
   }
   
-  /*void controlEvent(ControlEvent theEvent) {
-    for (int i = 0; i < controllables.size(); i++) {
-      Controllable controllable = controllables.get(i);
-      if (controllable.slider == theEvent.getController()) {
-        //if(controllable.lowToggle != null) controllable.lowToggle.setState(false); 
-      }
-      //if(controllable.lowToggle != null)
+  void controlEvent(ControlEvent ev) {
+    if (settingUpGUI) return;
+    if(ev.getController().getName() == "Save Settings") {
+      saveSettings();
     }
-  }*/
+  }
 
   void draw() {
     pushStyle();
