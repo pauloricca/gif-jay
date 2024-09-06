@@ -19,6 +19,7 @@ void saveSettings() {
   state.setString("currentMainShaderName", currentMainShaderName);
   state.setString("currentPostFXShaderName", currentPostFXShaderName);
   state.setString("currentColourShaderName", currentColourShaderName);
+  state.setString("currentMaskFileName", currentMaskFileName);
   
   saveJSONObject(state, settingsFileName);
 }
@@ -45,6 +46,10 @@ void loadSettings() {
   if (state.getString("currentMainShaderName") != null) currentMainShaderName = state.getString("currentMainShaderName"); 
   if (state.getString("currentPostFXShaderName") != null) currentPostFXShaderName = state.getString("currentPostFXShaderName");
   if (state.getString("currentColourShaderName") != null) currentColourShaderName = state.getString("currentColourShaderName");
+  if (state.getString("currentMaskFileName") != null) {
+    currentMaskFileName = state.getString("currentMaskFileName");
+    loadNewMask = true;
+  }
   
   for (int i = 0; i < controllables.size(); i++) {
       Controllable controllable = controllables.get(i);
