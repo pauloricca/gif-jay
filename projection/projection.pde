@@ -22,7 +22,8 @@ boolean doPostFX = true;
 boolean liveShaders = true;
 boolean useCamera = false;
 
-String initialGallery = "night vision";
+String[] galleries = {"night vision", "falling"};
+int currentGalleryIndex = 0;
 
 ArrayList<Controllable> controllables = null;
 
@@ -68,6 +69,7 @@ Controllable startingPoint = new Controllable("starting point", 0, 0, 1); // sta
 Controllable changeMovieController = new Controllable("change movie", 0, 0, 1); // changes movie when value > 0.5
 Controllable restartMovieController = new Controllable("restart movie", 0, 0, 1); // restarts movie when value > 0.5
 Controllable minRestartTime = new Controllable("min restart time", 0.1, 0.01, 2); // minimum interval between movie restarts
+Controllable galleryIndex = new Controllable("gallery", currentGalleryIndex, 0, galleries.length); // gallery index to display
 
 MovieProgramme movieProgramme;
 
@@ -89,7 +91,7 @@ void setup() {
   //size(600, 400, P3D); 
   
   movieProgramme = new MovieProgramme(this);
-  movieProgramme.loadDir(initialGallery);
+  movieProgramme.loadDir(galleries[currentGalleryIndex]);
 
   programmes.add(movieProgramme);
   if (useCamera) programmes.add(new CameraProgramme(this));
@@ -150,6 +152,11 @@ void updateShaders() {
 }
 
 void draw() {
+  if ( currentProgramme == movieProgramme && currentGalleryIndex != min(floor(galleryIndex.val()), galleries.length - 1) ) {
+    currentGalleryIndex = min(floor(galleryIndex.val()), galleries.length - 1);
+    movieProgramme.loadDir(galleries[currentGalleryIndex]);
+  }
+
   try {
     if (loadNewMask) {
       if (currentMaskFileName != null) {
